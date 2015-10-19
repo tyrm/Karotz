@@ -1,4 +1,4 @@
-package haus.pup.rabbit;
+package haus.pup.karotzhw;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ import javazoom.jl.player.Player;
 public class Speech {
   private static IvonaSpeechCloudClient speechCloud = new IvonaSpeechCloudClient(
           new ClasspathPropertiesFileCredentialsProvider("IvonaCredentials.properties"));;
-  private static Logger logger = LoggerFactory.getLogger("rabbit.Speech");
+  private static Logger logger = LoggerFactory.getLogger("karotzhw.Speech");
 
   String defaultVoice = "Emma";
   String cacheDir = "tts";
@@ -135,7 +135,7 @@ public class Speech {
 
     if (!outputFile.exists()) {
       logger.info("Retrieving speech file");
-      Logger ivonaLog = LoggerFactory.getLogger("rabbit.Speech.ivona");
+      Logger ivonaLog = LoggerFactory.getLogger("karotzhw.Speech.ivona");
 
       CreateSpeechRequest createSpeechRequest = new CreateSpeechRequest();
       Input input = new Input();
