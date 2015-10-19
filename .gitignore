@@ -7,8 +7,13 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 
+# Eclipse project files
+.classpath
+.project
+
 # IntelliJ IDEA IDE
 .idea
+*.iml
 
 # application config
 IvonaCredentials.properties
