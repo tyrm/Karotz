@@ -1,16 +1,16 @@
 package haus.pup.karotzhw;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
+
 import com.ivona.services.tts.IvonaSpeechCloudClient;
 import com.ivona.services.tts.model.CreateSpeechRequest;
 import com.ivona.services.tts.model.CreateSpeechResult;
 import com.ivona.services.tts.model.Input;
 import com.ivona.services.tts.model.Voice;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,10 +18,10 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-
 import javazoom.jl.player.Player;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Speech {
   private static IvonaSpeechCloudClient speechCloud = new IvonaSpeechCloudClient(
@@ -32,6 +32,11 @@ public class Speech {
   String cacheDir = "tts";
 
   public Speech() {
+    init();
+  }
+
+  public Speech(String d) {
+    cacheDir = d;
     init();
   }
 
@@ -46,10 +51,7 @@ public class Speech {
         File fCache = new File(cacheDir);
         fCache = new File(testDir);
 
-        if (fCache.isDirectory()) {
-          logger.debug(testDir + " Exists");
-        }
-        else {
+        if (!fCache.isDirectory()) {
           if (fCache.mkdirs()) {
             logger.info(testDir + " Created");
           }
