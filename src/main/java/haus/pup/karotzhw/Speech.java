@@ -1,13 +1,11 @@
 package haus.pup.karotzhw;
 
 import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
-
 import com.ivona.services.tts.IvonaSpeechCloudClient;
 import com.ivona.services.tts.model.CreateSpeechRequest;
 import com.ivona.services.tts.model.CreateSpeechResult;
 import com.ivona.services.tts.model.Input;
 import com.ivona.services.tts.model.Voice;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,9 +17,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.Queue;
-
 import javazoom.jl.player.Player;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +48,7 @@ public class Speech {
     for(int i=0; i<16; i++){
       for(int j=0; j<16; j++){
         String testDir = cacheDir + "/" + String.format("%01x", i & 0xf) + "/" + String.format("%01x", j & 0xf);
-
-        File fCache = new File(cacheDir);
-        fCache = new File(testDir);
+        File fCache = new File(testDir);
 
         if (!fCache.isDirectory()) {
           if (fCache.mkdirs()) {
