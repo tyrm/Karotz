@@ -206,7 +206,9 @@ public class Speech {
    * @return Cache Filepath
    */
   protected String getCacheFilename(String v, String t) {
-    String hash = getMD5("Ivona" + v + t);
+    String hashString = "Ivona" + v + t;
+
+    String hash = getMD5(hashString.toUpperCase());
 
     String folder1 = hash.substring(0,1);
     String folder2 = hash.substring(1,2);
