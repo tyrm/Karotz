@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import javazoom.jl.player.Player;
 
@@ -24,9 +26,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Speech {
-  private static IvonaSpeechCloudClient speechCloud = new IvonaSpeechCloudClient(
+  static IvonaSpeechCloudClient speechCloud = new IvonaSpeechCloudClient(
           new ClasspathPropertiesFileCredentialsProvider("IvonaCredentials.properties"));;
-  private static Logger logger = LoggerFactory.getLogger("karotzhw.Speech");
+  static Logger logger = LoggerFactory.getLogger("karotzhw.Speech");
+
+  private Boolean speaking = false;
+  private Queue phrases = new LinkedList();
 
   String defaultVoice = "Emma";
   String cacheDir = "tts";
@@ -61,6 +66,8 @@ public class Speech {
         }
       }
     }
+
+    say("Speech Initialized");
   }
 
   /**
@@ -108,23 +115,43 @@ public class Speech {
    */
   private void playFile(String v, String t) {
     String filename = cacheDir + "/" + getCacheFilename(v, t);
+    logger.debug("Queueing speech: (" + v + ") " + t);
 
-    try {
-      FileInputStream fis     = new FileInputStream(new File(filename).getCanonicalPath());
-      BufferedInputStream bis = new BufferedInputStream(fis);
-      final Player player = new Player(bis);
+    phrases.add(filename);
 
-      new Thread() {
-        public void run() {
-          try { player.play(); }
-          catch (Exception e) { System.out.println(e); }
+    startPlayer();
+  }
+
+  private void startPlayer() {
+
+    new Thread() {
+      public void run() {
+        if (!speaking) {
+          speaking = true;
+          while (phrases.peek() != null) {
+            Object firstElement = phrases.poll();
+
+            String filename = firstElement.toString();
+
+            logger.info("playing: " + filename);
+            try {
+              FileInputStream fis     = new FileInputStream(new File(filename).getCanonicalPath());
+              BufferedInputStream bis = new BufferedInputStream(fis);
+              final Player player = new Player(bis);
+
+              try { player.play(); }
+              catch (Exception e) { System.out.println(e); }
+            }
+            catch (Exception e) {
+              System.out.println("Problem playing file " + filename);
+              System.out.println(e);
+            }
+          }
+
+          speaking = false;
         }
-      }.start();
-    }
-    catch (Exception e) {
-      System.out.println("Problem playing file " + filename);
-      System.out.println(e);
-    }
+      }
+    }.start();
   }
 
   /**
@@ -136,7 +163,7 @@ public class Speech {
     File outputFile = new File(cacheDir + "/" + getCacheFilename(v, t));
 
     if (!outputFile.exists()) {
-      logger.info("Retrieving speech file");
+      logger.info("Retrieving speech file: (" + v + ") " + t);
       Logger ivonaLog = LoggerFactory.getLogger("karotzhw.Speech.ivona");
 
       CreateSpeechRequest createSpeechRequest = new CreateSpeechRequest();
@@ -156,13 +183,13 @@ public class Speech {
         CreateSpeechResult createSpeechResult = speechCloud.createSpeech(createSpeechRequest);
 
 
-        ivonaLog.trace("\nSuccess sending request:");
-        ivonaLog.trace(" content type:\t" + createSpeechResult.getContentType());
-        ivonaLog.trace(" request id:\t" + createSpeechResult.getTtsRequestId());
-        ivonaLog.trace(" request chars:\t" + createSpeechResult.getTtsRequestCharacters());
-        ivonaLog.trace(" request units:\t" + createSpeechResult.getTtsRequestUnits());
+        ivonaLog.debug("\nSuccess sending request:");
+        ivonaLog.debug(" content type:\t" + createSpeechResult.getContentType());
+        ivonaLog.debug(" request id:\t" + createSpeechResult.getTtsRequestId());
+        ivonaLog.debug(" request chars:\t" + createSpeechResult.getTtsRequestCharacters());
+        ivonaLog.debug(" request units:\t" + createSpeechResult.getTtsRequestUnits());
 
-        ivonaLog.trace("\nStarting to retrieve audio stream:");
+        ivonaLog.debug("\nStarting to retrieve audio stream:");
 
         in = createSpeechResult.getBody();
         outputStream = new FileOutputStream(outputFile);
@@ -197,7 +224,7 @@ public class Speech {
         }
       }
     } else {
-      logger.info("Speech file exists in cache");
+      logger.debug("Speech file exists in cache: (" + v + ") " + t);
     }
   }
 
