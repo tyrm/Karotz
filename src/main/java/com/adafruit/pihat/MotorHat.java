@@ -1,5 +1,6 @@
 package com.adafruit.pihat;
 
+import com.adafruit.pihat.impl.MotorHatDCMotorImpl;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 
@@ -10,6 +11,9 @@ public class MotorHat {
 
   public MotorHat(I2CBus b, int a) throws IOException {
     device = b.getDevice(a);
+  }
 
+  public DCMotor getDCMotor(int i){
+    return new MotorHatDCMotorImpl(device, i);
   }
 }
