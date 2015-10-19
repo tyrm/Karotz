@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 public class Speech {
   static IvonaSpeechCloudClient speechCloud = new IvonaSpeechCloudClient(
-          new ClasspathPropertiesFileCredentialsProvider("IvonaCredentials.properties"));;
+          new ClasspathPropertiesFileCredentialsProvider("IvonaCredentials.properties"));
   static Logger logger = LoggerFactory.getLogger("karotzhw.Speech");
 
   private Boolean speaking = false;
