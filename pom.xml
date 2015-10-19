@@ -21,12 +21,12 @@
             <version>[1.0,)</version>
         </dependency>
 
+        <!-- Hardware dependencies -->
         <dependency>
-            <groupId>javazoom</groupId>
-            <artifactId>jlayer</artifactId>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-core</artifactId>
             <version>[1.0,)</version>
         </dependency>
-
 
         <!-- Speech dependencies -->
         <dependency>
@@ -34,7 +34,11 @@
             <artifactId>ivona-speechcloud-sdk-java</artifactId>
             <version>[1.0,)</version>
         </dependency>
-
+        <dependency>
+            <groupId>javazoom</groupId>
+            <artifactId>jlayer</artifactId>
+            <version>[1.0,)</version>
+        </dependency>
     </dependencies>
 
     <properties>
