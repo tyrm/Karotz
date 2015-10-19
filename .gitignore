@@ -15,5 +15,6 @@ buildNumber.properties
 .idea
 *.iml
 
-# application config
+# application files
+tts/
 IvonaCredentials.properties
