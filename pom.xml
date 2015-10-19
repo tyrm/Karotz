@@ -28,6 +28,13 @@
             <version>[1.0,)</version>
         </dependency>
 
+        <!-- Database -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>[1.4,)</version>
+        </dependency>
+
         <!-- Speech dependencies -->
         <dependency>
             <groupId>com.ivona</groupId>
