@@ -62,9 +62,47 @@ public class Speech {
   }
 
   /**
+   * Set default voice
+   * @param v voice
+   */
+  public void setDefaultVoice(String v){
+    defaultVoice = v;
+  }
+
+  /**
+   * say text using default voice.
+   * @param t text
+   */
+  public void say(String t) {
+    say(defaultVoice, t);
+  }
+
+  /**
+   * Say text using voice.
+   * @param v voice
+   * @param t text
+   */
+  public void say(String v, String t){
+    getFile(v, t);
+    playFile(v, t);
+  }
+
+  /**
+   * Check if Speech files is in cache
+   * @param v Voice
+   * @param t Text
+   * @return true is speech file is cached
+   */
+  public boolean inCache(String v, String t) {
+    String filename = getCacheFilename(v, t);
+
+    return new File(filename).exists();
+  }
+
+  /**
    * Play file from cache
-   * @param v - Voice
-   * @param t - Text
+   * @param v Voice
+   * @param t Text
    */
   private void playFile(String v, String t) {
     String filename = cacheDir + "/" + getCacheFilename(v, t);
@@ -89,8 +127,8 @@ public class Speech {
 
   /**
    * Wrapper around Ivona Example code to retrieve a file
-   * @param v - voice
-   * @param t - text to speak
+   * @param v voice
+   * @param t text to speak
    */
   private void getFile(String v, String t) {
     File outputFile = new File(cacheDir + "/" + getCacheFilename(v, t));
@@ -163,8 +201,8 @@ public class Speech {
 
   /**
    * Build folder path and filename based on MD5 of voice and Text
-   * @param v - Voice
-   * @param t - Text
+   * @param v Voice
+   * @param t Text
    * @return Cache Filepath
    */
   protected String getCacheFilename(String v, String t) {
