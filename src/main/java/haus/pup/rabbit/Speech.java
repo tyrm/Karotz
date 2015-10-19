@@ -39,23 +39,11 @@ public class Speech {
     logger.info("Initializing Speech");
     speechCloud.setEndpoint("https://tts.eu-west-1.ivonacloud.com");
 
-    File fCache = new File(cacheDir);
-
-
-    if (fCache.isDirectory()) {
-      logger.debug(cacheDir + " Exists");
-    }
-    else {
-      if (fCache.mkdir()) {
-        logger.info(cacheDir + " Created");
-      }
-      else {
-        logger.error(cacheDir + " could not be Created");
-      }
-    }
     for(int i=0; i<16; i++){
       for(int j=0; j<16; j++){
         String testDir = cacheDir + "/" + String.format("%01x", i & 0xf) + "/" + String.format("%01x", j & 0xf);
+
+        File fCache = new File(cacheDir);
         fCache = new File(testDir);
 
         if (fCache.isDirectory()) {
@@ -71,9 +59,13 @@ public class Speech {
         }
       }
     }
-    playFile("Emma", "Hello Tyr");
   }
 
+  /**
+   * Play file from cache
+   * @param v - Voice
+   * @param t - Text
+   */
   private void playFile(String v, String t) {
     String filename = cacheDir + "/" + getCacheFilename(v, t);
 
