@@ -1,6 +1,7 @@
 package com.adafruit;
 
 import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.impl.I2CDeviceImpl;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -13,8 +14,9 @@ import org.slf4j.LoggerFactory;
  * Java Implementation of Adafruit's Adafruit_PWM_Servo_Driver.py
  * https://github.com/adafruit/Adafruit-Motor-HAT-Python-Library/blob/master/Adafruit_MotorHAT/Adafruit_PWM_Servo_Driver.py
  */
-public class PCA9685 extends I2CDeviceImpl {
+public class PCA9685  {
   Logger logger;
+  I2CDevice device;
 
   // Registers/etc
   static final byte MODE1 = (byte) 0x00;
@@ -34,23 +36,23 @@ public class PCA9685 extends I2CDeviceImpl {
   static final byte OUTDRV = (byte) 0x04;
   static final byte SWRST = (byte) 0x06;
 
-  public PCA9685(I2CBus b, int a) throws IOException, InterruptedException {
-    super(b, a); // Init i2c device
-    logger = LoggerFactory.getLogger("PCA9685." + a);
+  public PCA9685(I2CDevice _device, int address) throws IOException, InterruptedException {
+    device = _device;
+    logger = LoggerFactory.getLogger("PCA9685." + address);
 
     logger.debug("Reseting PCA9685 MODE1 (without SLEEP) and MODE2");
     setAllPWM(0, 0);
 
     byte[] buffer = new byte[1];
     buffer[0] = OUTDRV;
-    write(buffer, MODE2, 1);
+    device.write(buffer, MODE2, 1);
     buffer[0] = ALLCALL;
-    write(buffer, MODE1, 1);
+    device.write(buffer, MODE1, 1);
     TimeUnit.MILLISECONDS.sleep(5);          // wait for oscillator
 
-    read(buffer, MODE1, 1);
+    device.read(buffer, MODE1, 1);
     buffer[0] = (byte) (buffer[0] & ~SLEEP); // wake up (reset sleep)
-    write(buffer, MODE1, 1);
+    device.write(buffer, MODE1, 1);
     TimeUnit.MILLISECONDS.sleep(5);          // wait for oscillator
   }
 
@@ -59,7 +61,7 @@ public class PCA9685 extends I2CDeviceImpl {
    * @throws IOException
    */
   public void softwareReset() throws IOException {
-    write(0, SWRST);
+    device.write(0, SWRST);
     logger.info("Sending reset");
   }
 
@@ -81,20 +83,20 @@ public class PCA9685 extends I2CDeviceImpl {
     logger.debug("Final pre-scale: " + prescale);
 
     byte[] oldmode = new byte[1];
-    read(oldmode, MODE1, 1);
+    device.read(oldmode, MODE1, 1);
     byte[] newmode = new byte[1];
     newmode[0] =  (byte) ((oldmode[0] & (byte) 0x7F) | (byte) 0x10); // Sleep
-    write(newmode, MODE1, 1);                                        // Go to Sleep
+    device.write(newmode, MODE1, 1);                                 // Go to Sleep
     byte[] flooredPrescale = new byte[1];
     flooredPrescale[0] = (byte) Math.floor(prescale);
-    write(flooredPrescale, PRESCALE, 1);
-    read(oldmode, MODE1, 1);
+    device.write(flooredPrescale, PRESCALE, 1);
+    device.read(oldmode, MODE1, 1);
 
     TimeUnit.MILLISECONDS.sleep(5);
 
     byte[] newoldmode = new byte[1];
     newoldmode[0] = (byte) (oldmode[0] | (byte) 0x80);
-    read(newoldmode, MODE1, 1);
+    device.read(newoldmode, MODE1, 1);
   }
 
   /**
@@ -112,7 +114,7 @@ public class PCA9685 extends I2CDeviceImpl {
 
     byte register = (byte) (LED0 + 4 * channel);
 
-    write(buffer, register, 4);
+    device.write(buffer, register, 4);
     logger.info("write ["+asHex(register)+"]["+asHex(buffer)+"]");
   }
 
@@ -128,7 +130,7 @@ public class PCA9685 extends I2CDeviceImpl {
     buffer[3] = (byte) (off & (byte) 0xFF);
     buffer[4] = (byte) (off >> 8);
 
-    write(buffer, ALL_LED, 4);
+    device.write(buffer, ALL_LED, 4);
     logger.info("write ["+asHex(ALL_LED)+"]["+asHex(buffer)+"]");
   }
 
