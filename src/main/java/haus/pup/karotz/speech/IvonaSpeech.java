@@ -185,13 +185,13 @@ public class IvonaSpeech implements Speech {
       CreateSpeechResult createSpeechResult = speechCloud.createSpeech(createSpeechRequest);
 
 
-      ivonaLog.debug("\nSuccess sending request:");
+      ivonaLog.debug("Success sending request:");
       ivonaLog.debug(" content type:\t" + createSpeechResult.getContentType());
       ivonaLog.debug(" request id:\t" + createSpeechResult.getTtsRequestId());
       ivonaLog.debug(" request chars:\t" + createSpeechResult.getTtsRequestCharacters());
       ivonaLog.debug(" request units:\t" + createSpeechResult.getTtsRequestUnits());
 
-      ivonaLog.debug("\nStarting to retrieve audio stream:");
+      ivonaLog.debug("Starting to retrieve audio stream:");
 
       in = createSpeechResult.getBody();
       outputStream = new FileOutputStream(outputFile);
@@ -203,7 +203,7 @@ public class IvonaSpeech implements Speech {
         outputStream.write(buffer, 0, readBytes);
       }
 
-      ivonaLog.info("\nFile saved: " + outputFile.getPath());
+      ivonaLog.info("File saved: " + outputFile.getPath());
 
     } catch (FileNotFoundException e) {
       ivonaLog.error("File Not Found exception Occurred. See Trace.");
