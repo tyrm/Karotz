@@ -1,12 +1,9 @@
 package haus.pup;
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CFactory;
-import haus.pup.karotzhw.*;
+import haus.pup.karotz.Speech;
+import haus.pup.karotz.speech.IvonaSpeech;
+
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -46,8 +43,8 @@ public class Karotz {
       logger.error("Failed to make connection!");
     }
 
-    // Init Speech
-    Speech speech = new Speech();
+    // Init IvonaSpeech
+    Speech speech = new IvonaSpeech();
     if (vocalDebug) {
       speech.say("Speech Initialized");
     }
@@ -72,13 +69,11 @@ public class Karotz {
   private static void greet(Speech s) {
     DateTime dt = new DateTime();
 
-    if (dt.getHourOfDay() < 12 ) {
+    if (dt.getHourOfDay() < 12) {
       s.say("Good Morning");
-    }
-    else if (dt.getHourOfDay() > 11 && dt.getHourOfDay() < 17 ) {
+    } else if (dt.getHourOfDay() > 11 && dt.getHourOfDay() < 17) {
       s.say("Good Afternoon");
-    }
-    else {
+    } else {
       s.say("Good Evening");
     }
 

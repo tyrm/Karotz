@@ -35,7 +35,7 @@
             <version>[1.4,)</version>
         </dependency>
 
-        <!-- Speech dependencies -->
+        <!-- IvonaSpeech dependencies -->
         <dependency>
             <groupId>com.ivona</groupId>
             <artifactId>ivona-speechcloud-sdk-java</artifactId>
