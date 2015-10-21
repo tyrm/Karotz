@@ -7,6 +7,7 @@ import com.ivona.services.tts.model.CreateSpeechResult;
 import com.ivona.services.tts.model.Input;
 import com.ivona.services.tts.model.Voice;
 import haus.pup.karotz.Speech;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,6 +19,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.Queue;
+
 import javazoom.jl.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,16 +48,15 @@ public class IvonaSpeech implements Speech {
     logger.info("Initializing IvonaSpeech");
     speechCloud.setEndpoint("https://tts.eu-west-1.ivonacloud.com");
 
-    for(int i=0; i<16; i++){
-      for(int j=0; j<16; j++){
+    for (int i = 0; i < 16; i++) {
+      for (int j = 0; j < 16; j++) {
         String testDir = cacheDir + "/" + String.format("%01x", i & 0xf) + "/" + String.format("%01x", j & 0xf);
         File fCache = new File(testDir);
 
         if (!fCache.isDirectory()) {
           if (fCache.mkdirs()) {
             logger.info(testDir + " Created");
-          }
-          else {
+          } else {
             logger.error(testDir + " could not be Created");
           }
         }
@@ -65,14 +66,16 @@ public class IvonaSpeech implements Speech {
 
   /**
    * Set default voice
+   *
    * @param v voice
    */
-  public void setDefaultVoice(String v){
+  public void setDefaultVoice(String v) {
     defaultVoice = v;
   }
 
   /**
    * say text using default voice.
+   *
    * @param t text
    */
   public void say(String t) {
@@ -81,10 +84,11 @@ public class IvonaSpeech implements Speech {
 
   /**
    * Say text using voice.
+   *
    * @param v voice
    * @param t text
    */
-  public void say(String v, String t){
+  public void say(String v, String t) {
     if (!inCache(v, t)) {
       stageVoice(v, t);
     }
@@ -93,6 +97,7 @@ public class IvonaSpeech implements Speech {
 
   /**
    * Check if IvonaSpeech files is in cache
+   *
    * @param v Voice
    * @param t Text
    * @return true is speech file is cached
@@ -105,6 +110,7 @@ public class IvonaSpeech implements Speech {
 
   /**
    * Play file from cache
+   *
    * @param v Voice
    * @param t Text
    */
@@ -130,14 +136,16 @@ public class IvonaSpeech implements Speech {
 
             logger.info("playing: " + filename);
             try {
-              FileInputStream fis     = new FileInputStream(new File(filename).getCanonicalPath());
+              FileInputStream fis = new FileInputStream(new File(filename).getCanonicalPath());
               BufferedInputStream bis = new BufferedInputStream(fis);
               final Player player = new Player(bis);
 
-              try { player.play(); }
-              catch (Exception e) { System.out.println(e); }
-            }
-            catch (Exception e) {
+              try {
+                player.play();
+              } catch (Exception e) {
+                System.out.println(e);
+              }
+            } catch (Exception e) {
               System.out.println("Problem playing file " + filename);
               System.out.println(e);
             }
@@ -151,6 +159,7 @@ public class IvonaSpeech implements Speech {
 
   /**
    * Stage speech file in cache for text using the default voice. If file exists it will be overwritten
+   *
    * @param t text to speak
    */
   public void stageVoice(String t) {
@@ -159,6 +168,7 @@ public class IvonaSpeech implements Speech {
 
   /**
    * Stage speech file in cache for text using voice. If file exists it will be overwritten
+   *
    * @param v voice
    * @param t text to speak
    */
@@ -229,6 +239,7 @@ public class IvonaSpeech implements Speech {
 
   /**
    * Build folder path and filename based on MD5 of voice and Text
+   *
    * @param v Voice - Voice Used
    * @param t Text - Text to say
    * @return Cache Filepath
@@ -238,8 +249,8 @@ public class IvonaSpeech implements Speech {
 
     String hash = getMD5(hashString.toUpperCase());
 
-    String folder1 = hash.substring(0,1);
-    String folder2 = hash.substring(1,2);
+    String folder1 = hash.substring(0, 1);
+    String folder2 = hash.substring(1, 2);
     String filename = hash.substring(2);
 
     return folder1 + "/" + folder2 + "/" + filename + ".mp3";

@@ -4,6 +4,7 @@ public interface Speech {
 
   /**
    * Check if IvonaSpeech files is in cache
+   *
    * @param v Voice
    * @param t Text
    * @return true is speech file is cached
@@ -12,12 +13,14 @@ public interface Speech {
 
   /**
    * say text using default voice.
+   *
    * @param t text
    */
   void say(String t);
 
   /**
    * Say text using voice.
+   *
    * @param v voice
    * @param t text
    */
@@ -25,6 +28,7 @@ public interface Speech {
 
   /**
    * Stage speech file in cache for text using voice. If file exists it will be overwritten
+   *
    * @param v voice
    * @param t text
    */
@@ -32,12 +36,14 @@ public interface Speech {
 
   /**
    * Stage speech file in cache for text using the default voice. If file exists it will be overwritten
+   *
    * @param t text
    */
   void stageVoice(String t);
 
   /**
    * Set default voice
+   *
    * @param v voice
    */
   void setDefaultVoice(String v);

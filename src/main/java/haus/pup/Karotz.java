@@ -2,11 +2,13 @@ package haus.pup;
 
 import haus.pup.karotz.Speech;
 import haus.pup.karotz.speech.IvonaSpeech;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Objects;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,13 +69,11 @@ public class Karotz {
   private static void greet(Speech s) {
     DateTime dt = new DateTime();
 
-    if (dt.getHourOfDay() < 12 ) {
+    if (dt.getHourOfDay() < 12) {
       s.say("Good Morning");
-    }
-    else if (dt.getHourOfDay() > 11 && dt.getHourOfDay() < 17 ) {
+    } else if (dt.getHourOfDay() > 11 && dt.getHourOfDay() < 17) {
       s.say("Good Afternoon");
-    }
-    else {
+    } else {
       s.say("Good Evening");
     }
 

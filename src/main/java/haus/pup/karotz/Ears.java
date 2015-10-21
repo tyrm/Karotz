@@ -15,7 +15,7 @@ public class Ears {
 
   GpioPinDigitalInput headBtn = null;
 
-  public Ears(GpioController gpio){
+  public Ears(GpioController gpio) {
     rEarR = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "MyLED", PinState.LOW);
     rEarL = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "MyLED", PinState.LOW);
     lEarR = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "MyLED", PinState.LOW);

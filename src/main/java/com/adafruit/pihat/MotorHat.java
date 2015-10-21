@@ -10,10 +10,10 @@ public class MotorHat {
   PCA9685 device = null;
 
   public MotorHat(I2CBus bus, int address) throws IOException, InterruptedException {
-    device = new PCA9685(bus.getDevice(address),address);
+    device = new PCA9685(bus.getDevice(address), address);
   }
 
-  public DCMotor getDCMotor(int i){
+  public DCMotor getDCMotor(int i) {
     return new MotorHatDCMotorImpl(device, i);
   }
 }
