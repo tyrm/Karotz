@@ -1,17 +1,12 @@
 package haus.pup;
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CFactory;
-import haus.pup.karotzhw.*;
+import haus.pup.karotz.Speech;
+import haus.pup.karotz.speech.IvonaSpeech;
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Objects;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +41,8 @@ public class Karotz {
       logger.error("Failed to make connection!");
     }
 
-    // Init Speech
-    Speech speech = new Speech();
+    // Init IvonaSpeech
+    Speech speech = new IvonaSpeech();
     if (vocalDebug) {
       speech.say("Speech Initialized");
     }
