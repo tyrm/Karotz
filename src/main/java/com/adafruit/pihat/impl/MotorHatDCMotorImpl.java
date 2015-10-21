@@ -1,16 +1,16 @@
 package com.adafruit.pihat.impl;
 
+import com.adafruit.PCA9685;
 import com.adafruit.pihat.DCMotor;
-import com.pi4j.io.i2c.I2CDevice;
 
 public class MotorHatDCMotorImpl implements DCMotor {
-  I2CDevice device = null;
+  PCA9685 device = null;
 
   int pwm = 0;
   int in1 = 0;
   int in2 = 0;
 
-  public MotorHatDCMotorImpl(I2CDevice d, int i) {
+  public MotorHatDCMotorImpl(PCA9685 d, int i) {
     device = d;
     switch(i){
       case 0:
