@@ -1,4 +1,4 @@
-package haus.pup.karotzhw;
+package haus.pup.karotz.speech;
 
 import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
 import com.ivona.services.tts.IvonaSpeechCloudClient;
@@ -6,6 +6,7 @@ import com.ivona.services.tts.model.CreateSpeechRequest;
 import com.ivona.services.tts.model.CreateSpeechResult;
 import com.ivona.services.tts.model.Input;
 import com.ivona.services.tts.model.Voice;
+import haus.pup.karotz.speech.Util;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,18 +14,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.Queue;
 import javazoom.jl.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Speech {
+public class IvonaSpeech {
   static IvonaSpeechCloudClient speechCloud = new IvonaSpeechCloudClient(
           new ClasspathPropertiesFileCredentialsProvider("IvonaCredentials.properties"));
-  static Logger logger = LoggerFactory.getLogger("karotzhw.Speech");
+  static Logger logger = LoggerFactory.getLogger("karotzhw.IvonaSpeech");
 
   private Boolean speaking = false;
   private Queue phrases = new LinkedList();
@@ -32,17 +31,17 @@ public class Speech {
   String defaultVoice = "Emma";
   String cacheDir = "tts";
 
-  public Speech() {
+  public IvonaSpeech() {
     init();
   }
 
-  public Speech(String d) {
+  public IvonaSpeech(String d) {
     cacheDir = d;
     init();
   }
 
   private void init() {
-    logger.info("Initializing Speech");
+    logger.info("Initializing IvonaSpeech");
     speechCloud.setEndpoint("https://tts.eu-west-1.ivonacloud.com");
 
     for(int i=0; i<16; i++){
@@ -89,7 +88,7 @@ public class Speech {
   }
 
   /**
-   * Check if Speech files is in cache
+   * Check if IvonaSpeech files is in cache
    * @param v Voice
    * @param t Text
    * @return true is speech file is cached
@@ -156,7 +155,7 @@ public class Speech {
 
     if (!outputFile.exists()) {
       logger.info("Retrieving speech file: (" + v + ") " + t);
-      Logger ivonaLog = LoggerFactory.getLogger("karotzhw.Speech.ivona");
+      Logger ivonaLog = LoggerFactory.getLogger("karotzhw.IvonaSpeech.ivona");
 
       CreateSpeechRequest createSpeechRequest = new CreateSpeechRequest();
       Input input = new Input();
@@ -209,14 +208,14 @@ public class Speech {
           if (outputStream != null) {
             outputStream.close();
           }
-          logger.info("Speech file saved: " + outputFile.getPath());
+          logger.info("IvonaSpeech file saved: " + outputFile.getPath());
         } catch (IOException e) {
           ivonaLog.error("IO exception Occurred. See Trace.");
           e.printStackTrace();
         }
       }
     } else {
-      logger.debug("Speech file exists in cache: (" + v + ") " + t);
+      logger.debug("IvonaSpeech file exists in cache: (" + v + ") " + t);
     }
   }
 
@@ -229,7 +228,7 @@ public class Speech {
   protected String getCacheFilename(String v, String t) {
     String hashString = "Ivona" + v + t;
 
-    String hash = getMD5(hashString.toUpperCase());
+    String hash = Util.getMD5(hashString.toUpperCase());
 
     String folder1 = hash.substring(0,1);
     String folder2 = hash.substring(1,2);
@@ -238,23 +237,5 @@ public class Speech {
     return folder1 + "/" + folder2 + "/" + filename + ".mp3";
   }
 
-  protected String getMD5(String s) {
-    // Safely Create MD5 Message Digest
-    MessageDigest md = null;
-    try {
-      md = MessageDigest.getInstance("MD5");
-    } catch (NoSuchAlgorithmException e) {
-      logger.error("No Such Algorithm exception Occurred. See Trace.");
-      e.printStackTrace();
-    }
 
-    md.update(s.getBytes());
-    byte[] digest = md.digest();
-    StringBuilder sb = new StringBuilder();
-    for (byte b : digest) {
-      sb.append(String.format("%02x", b & 0xff));
-    }
-
-    return sb.toString();
-  }
 }

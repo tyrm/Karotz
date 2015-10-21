@@ -1,4 +1,4 @@
-package haus.pup.karotzhw;
+package haus.pup.karotz;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
