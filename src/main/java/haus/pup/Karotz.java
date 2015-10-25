@@ -1,9 +1,17 @@
 package haus.pup;
 
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CFactory;
+import haus.pup.karotz.Ear;
+import haus.pup.karotz.Ears;
 import haus.pup.karotz.Speech;
+import haus.pup.karotz.ears.MotorHatEars;
 import haus.pup.karotz.speech.IvonaSpeech;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Karotz {
-  public static void main(String args[]) {
+  public static void main(String args[]) throws IOException, InterruptedException {
     // Init Logging
     Logger logger = LoggerFactory.getLogger("Karotz");
 
@@ -50,20 +58,31 @@ public class Karotz {
     }
 
     // Init RasPi Hardware
-    //GpioController gpio = GpioFactory.getInstance();
+    GpioController gpio = GpioFactory.getInstance();
 
-    /*I2CBus i2cbus = null;
+    I2CBus i2cbus = null;
     try {
       i2cbus = I2CFactory.getInstance(1);
     } catch (IOException e) {
       speech.say("I could not open i squared c bus 1");
       logger.error("Could not open I2C bus 1");
       e.printStackTrace();
-    }*/
+    }
 
-    //Ears ears = new Ears(gpio);
+    Ears ears = null;
+    try {
+       ears = new MotorHatEars(i2cbus, 0x60, null, null);
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
 
     greet(speech);
+
+    ears.home(Ear.BOTH);
+
+    i2cbus.close();
   }
 
   private static void greet(Speech s) {
