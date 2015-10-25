@@ -4,7 +4,7 @@ import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.i2c.I2CBus;
 
-public class Ears {
+public class MotorHatEars {
   GpioPinDigitalOutput rEarR = null;
   GpioPinDigitalOutput rEarL = null;
   GpioPinDigitalOutput lEarR = null;
@@ -12,7 +12,7 @@ public class Ears {
 
   GpioPinDigitalInput headBtn = null;
 
-  public Ears(I2CBus bus) {
+  public MotorHatEars(I2CBus bus) {
 
   }
 
