@@ -44,42 +44,41 @@ public class PCA9685 {
     byte[] oldmode = new byte[1];
 
     try {
-      device.read(oldmode, MODE1, 1);
+      int r = device.read(MODE1, oldmode, 0, oldmode.length);
+      logger.debug("Starting Mode: " + oldmode[0]);
     } catch (IOException e) {
       logger.error("failed to read [" + asHex(MODE1) + "]", e);
     }
-    logger.debug("Mode: " + oldmode[0]);
 
     logger.debug("Reseting PCA9685 MODE1 (without SLEEP) and MODE2");
     setAllPWM(0, 0);
 
-    byte[] buffer = new byte[1];
-    buffer[0] = OUTDRV;
     try {
-      device.write(buffer, MODE2, 1);
+      device.write(MODE2, OUTDRV);
       logger.info("write [" + asHex(MODE2) + "][" + asHex(OUTDRV) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex(MODE2) + "][" + asHex(OUTDRV) + "]", e);
     }
 
-    buffer[0] = ALLCALL;
     try {
-      device.write(buffer, MODE1, 1);
+      device.write(MODE1, ALLCALL);
       logger.info("write [" + asHex(MODE1) + "][" + asHex(ALLCALL) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex(MODE1) + "][" + asHex(ALLCALL) + "]", e);
     }
     TimeUnit.MILLISECONDS.sleep(50); // wait for oscillator
 
+
+    byte[] buffer = new byte[1];
     try {
-      device.read(buffer, MODE1, 1);
+      int r = device.read(MODE1, buffer, 0, buffer.length);
       logger.info("read [" + asHex(MODE1) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex(MODE1) + "][" + asHex(buffer) + "]", e);
     }
     buffer[0] = (byte) (buffer[0] & ~SLEEP); // wake up (reset sleep)
     try {
-      device.write(buffer, MODE1, 1);
+      device.write(MODE1, buffer[0]);
       logger.info("write [" + asHex(MODE1) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex(MODE1) + "][" + asHex(buffer) + "]", e);
@@ -117,6 +116,7 @@ public class PCA9685 {
 
     byte[] oldmode = new byte[1];
     device.read(oldmode, MODE1, 1);
+
     byte[] newmode = new byte[1];
     newmode[0] = (byte) ((oldmode[0] & (byte) 0x7F) | (byte) 0x10); // Sleep
     device.write(newmode, MODE1, 1); // Go to Sleep
@@ -144,34 +144,33 @@ public class PCA9685 {
 
     byte register = (byte) (LED0 + 4 * channel);
 
-    byte[] buffer = new byte[1];
-    buffer[0] = (byte) (on & (byte) 0xFF);
+    byte buffer = (byte) (on & (byte) 0xFF);
     try {
-      device.write(buffer, register, 1);
+      device.write(register, buffer);
       logger.info("write [" + asHex(register) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex(register) + "][" + asHex(buffer) + "]", e);
     }
 
-    buffer[0] = (byte) (on >> 8);
+    buffer = (byte) (on >> 8);
     try {
-      device.write(buffer, register+1, 1);
+      device.write(register+1, buffer);
       logger.info("write [" + asHex((byte) (register+1)) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex((byte) (register + 1)) + "][" + asHex(buffer) + "]", e);
     }
 
-    buffer[0] = (byte) (off & (byte) 0xFF);
+    buffer = (byte) (off & (byte) 0xFF);
     try {
-      device.write(buffer, register+2, 1);
+      device.write(register+2, buffer);
       logger.info("write [" + asHex((byte) (register+2)) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex((byte) (register + 2)) + "][" + asHex(buffer) + "]", e);
     }
 
-    buffer[0] = (byte) (off >> 8);
+    buffer = (byte) (off >> 8);
     try {
-      device.write(buffer, register+3, 1);
+      device.write(register+3, buffer);
       logger.info("write [" + asHex((byte) (register+3)) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex((byte) (register + 3)) + "][" + asHex(buffer) + "]", e);
@@ -190,35 +189,34 @@ public class PCA9685 {
 
     byte register = (byte) (ALL_LED);
 
-    byte[] buffer = new byte[1];
-    buffer[0] = (byte) (on & (byte) 0xFF);
+    byte buffer = (byte) (on & (byte) 0xFF);
     try {
-      device.write(buffer, register, 1);
+      device.write(register, buffer);
       logger.info("write [" + asHex(register) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex(register) + "][" + asHex(buffer) + "]", e);
     }
 
-    buffer[0] = (byte) (on >> 8);
+    buffer = (byte) (on >> 8);
     try {
-      device.write(buffer, register+1, 1);
+      device.write(register+1, buffer);
       logger.info("write [" + asHex((byte) (register+1)) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       e.printStackTrace();
       logger.error("failed to write [" + asHex((byte) (register + 1)) + "][" + asHex(buffer) + "]", e);
     }
 
-    buffer[0] = (byte) (off & (byte) 0xFF);
+    buffer = (byte) (off & (byte) 0xFF);
     try {
-      device.write(buffer, register + 2, 1);
+      device.write(register + 2, buffer);
       logger.info("write [" + asHex((byte) (register+2)) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex((byte) (register + 2)) + "][" + asHex(buffer) + "]", e);
     }
 
-    buffer[0] = (byte) (off >> 8);
+    buffer = (byte) (off >> 8);
     try {
-      device.write(buffer, register+3, 1);
+      device.write(register+3, buffer);
       logger.info("write [" + asHex((byte) (register+3)) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex((byte) (register + 3)) + "][" + asHex(buffer) + "]", e);
@@ -234,6 +232,7 @@ public class PCA9685 {
     for (byte b : bs) {
       sb.append(String.format("%02x", b & 0xff));
     }
+
     return sb.toString();
   }
 
