@@ -1,5 +1,6 @@
 package com.adafruit;
 
+import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 
 import java.io.IOException;
@@ -36,8 +37,8 @@ public class PCA9685 {
   static final byte OUTDRV = (byte) 0x04;
   static final byte SWRST = (byte) 0x06;
 
-  public PCA9685(I2CDevice _device, int address) throws InterruptedException {
-    device = _device;
+  public PCA9685(I2CBus bus, int address) throws InterruptedException, IOException {
+    device = bus.getDevice(address);
     logger = LoggerFactory.getLogger("PCA9685." + address);
 
 
