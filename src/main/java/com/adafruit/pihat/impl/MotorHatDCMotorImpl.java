@@ -76,9 +76,9 @@ public class MotorHatDCMotorImpl implements DCMotor {
 
   private void setPin(int pin, boolean value) throws IOException {
     if (value) {
-      device.setPWM(pin, 4096, 0);
+      device.setPWM(pin, 4095, 0);
     } else {
-      device.setPWM(pin, 0, 4096);
+      device.setPWM(pin, 0, 4095);
     }
   }
 }
