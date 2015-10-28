@@ -37,7 +37,7 @@ public class MotorHatEars implements Ears {
 
     TimeUnit.SECONDS.sleep(5); // wait for oscillator
 
-    //rightEar.release();
+    rightEar.release();
 
   }
 
