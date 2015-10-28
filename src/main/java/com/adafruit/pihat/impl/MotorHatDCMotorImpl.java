@@ -38,8 +38,6 @@ public class MotorHatDCMotorImpl implements DCMotor {
     }
   }
 
-  ;
-
   public void forward() throws IOException {
     setPin(in1, true);
     setPin(in2, false);
