@@ -30,9 +30,9 @@
 
         <!-- Database -->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>[1.4,)</version>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>[3.1,)</version>
         </dependency>
 
         <!-- IvonaSpeech dependencies -->

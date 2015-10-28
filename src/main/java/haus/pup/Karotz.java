@@ -1,7 +1,11 @@
 package haus.pup;
 
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioFactory;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CFactory;
 import haus.pup.karotz.Ear;
@@ -10,13 +14,10 @@ import haus.pup.karotz.Speech;
 import haus.pup.karotz.ears.MotorHatEars;
 import haus.pup.karotz.speech.IvonaSpeech;
 
-import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Objects;
 
+import org.bson.Document;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public class Karotz {
   public static void main(String args[]) throws IOException, InterruptedException {
     // Init Logging
-    Logger logger = LoggerFactory.getLogger("Karotz");
+    final Logger logger = LoggerFactory.getLogger("Karotz");
 
     // Enable spoken debugging
     Boolean vocalDebug = false;
@@ -35,21 +36,10 @@ public class Karotz {
     logger.info("Vocal Debugger: " + vocalDebug.toString());
 
     // Init DB
-    String dbURI = "jdbc:h2:" + new File("karotz").getAbsolutePath();
-    logger.info("Connecting to DB at :" + dbURI);
+    MongoClient mongoClient = new MongoClient();
+    MongoDatabase db = mongoClient.getDatabase("karotz");
 
-    Connection db = null;
-    try {
-      db = DriverManager.getConnection(dbURI);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-
-    if (db != null) {
-      logger.info("Connected to " + dbURI);
-    } else {
-      logger.error("Failed to make connection!");
-    }
+    MongoCollection<Document> coll =  db.getCollection("testCollection");
 
     // Init IvonaSpeech
     Speech speech = new IvonaSpeech();
@@ -58,7 +48,7 @@ public class Karotz {
     }
 
     // Init RasPi Hardware
-    GpioController gpio = GpioFactory.getInstance();
+    final GpioController gpio = GpioFactory.getInstance();
 
     I2CBus i2cbus = null;
     try {
@@ -80,9 +70,26 @@ public class Karotz {
 
     greet(speech);
 
+
+    // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
+    final GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
+
+    // create and register gpio pin listener
+    myButton.addListener(new GpioPinListenerDigital() {
+      @Override
+      public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+        // display pin state on console
+        logger.info(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+      }
+
+    });
+
     ears.home(Ear.BOTH);
 
-    i2cbus.close();
+    for (;;) {
+      Thread.sleep(500);
+    }
+
   }
 
   private static void greet(Speech s) {

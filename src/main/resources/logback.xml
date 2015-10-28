@@ -9,6 +9,8 @@
         </encoder>
     </appender>
 
+    <logger name="org.mongodb.driver.cluster" level="info" />
+
     <root level="trace">
         <appender-ref ref="STDOUT" />
     </root>
