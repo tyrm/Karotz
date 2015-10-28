@@ -39,7 +39,7 @@ public class PCA9685 {
 
   public PCA9685(I2CBus bus, int address) throws InterruptedException, IOException {
     device = bus.getDevice(address);
-    logger = LoggerFactory.getLogger("PCA9685." + address);
+    logger = LoggerFactory.getLogger("i2c.PCA9685." + address);
 
 
     byte[] oldmode = new byte[1];
@@ -51,19 +51,19 @@ public class PCA9685 {
       logger.error("failed to read [" + asHex(MODE1) + "]", e);
     }
 
-    logger.debug("Reseting PCA9685 MODE1 (without SLEEP) and MODE2");
+    logger.info("Reseting PCA9685 MODE1 (without SLEEP) and MODE2");
     setAllPWM(0, 0);
 
     try {
       device.write(MODE2, OUTDRV);
-      logger.info("write [" + asHex(MODE2) + "][" + asHex(OUTDRV) + "]");
+      logger.debug("write [" + asHex(MODE2) + "][" + asHex(OUTDRV) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex(MODE2) + "][" + asHex(OUTDRV) + "]", e);
     }
 
     try {
       device.write(MODE1, ALLCALL);
-      logger.info("write [" + asHex(MODE1) + "][" + asHex(ALLCALL) + "]");
+      logger.debug("write [" + asHex(MODE1) + "][" + asHex(ALLCALL) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex(MODE1) + "][" + asHex(ALLCALL) + "]", e);
     }
@@ -73,14 +73,14 @@ public class PCA9685 {
     byte[] buffer = new byte[1];
     try {
       int r = device.read(MODE1, buffer, 0, buffer.length);
-      logger.info("read [" + asHex(MODE1) + "][" + asHex(buffer) + "]");
+      logger.debug("read [" + asHex(MODE1) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex(MODE1) + "][" + asHex(buffer) + "]", e);
     }
     buffer[0] = (byte) (buffer[0] & ~SLEEP); // wake up (reset sleep)
     try {
       device.write(MODE1, buffer[0]);
-      logger.info("write [" + asHex(MODE1) + "][" + asHex(buffer) + "]");
+      logger.debug("write [" + asHex(MODE1) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex(MODE1) + "][" + asHex(buffer) + "]", e);
     }
@@ -148,7 +148,7 @@ public class PCA9685 {
     byte buffer = (byte) (on & (byte) 0xFF);
     try {
       device.write(register, buffer);
-      logger.info("write [" + asHex(register) + "][" + asHex(buffer) + "]");
+      logger.debug("write [" + asHex(register) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex(register) + "][" + asHex(buffer) + "]", e);
     }
@@ -156,7 +156,7 @@ public class PCA9685 {
     buffer = (byte) (on >> 8);
     try {
       device.write(register+1, buffer);
-      logger.info("write [" + asHex((byte) (register+1)) + "][" + asHex(buffer) + "]");
+      logger.debug("write [" + asHex((byte) (register + 1)) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex((byte) (register + 1)) + "][" + asHex(buffer) + "]", e);
     }
@@ -164,7 +164,7 @@ public class PCA9685 {
     buffer = (byte) (off & (byte) 0xFF);
     try {
       device.write(register+2, buffer);
-      logger.info("write [" + asHex((byte) (register+2)) + "][" + asHex(buffer) + "]");
+      logger.debug("write [" + asHex((byte) (register + 2)) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex((byte) (register + 2)) + "][" + asHex(buffer) + "]", e);
     }
@@ -172,7 +172,7 @@ public class PCA9685 {
     buffer = (byte) (off >> 8);
     try {
       device.write(register+3, buffer);
-      logger.info("write [" + asHex((byte) (register+3)) + "][" + asHex(buffer) + "]");
+      logger.debug("write [" + asHex((byte) (register + 3)) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex((byte) (register + 3)) + "][" + asHex(buffer) + "]", e);
     }
@@ -193,7 +193,7 @@ public class PCA9685 {
     byte buffer = (byte) (on & (byte) 0xFF);
     try {
       device.write(register, buffer);
-      logger.info("write [" + asHex(register) + "][" + asHex(buffer) + "]");
+      logger.debug("write [" + asHex(register) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex(register) + "][" + asHex(buffer) + "]", e);
     }
@@ -201,7 +201,7 @@ public class PCA9685 {
     buffer = (byte) (on >> 8);
     try {
       device.write(register+1, buffer);
-      logger.info("write [" + asHex((byte) (register+1)) + "][" + asHex(buffer) + "]");
+      logger.debug("write [" + asHex((byte) (register + 1)) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       e.printStackTrace();
       logger.error("failed to write [" + asHex((byte) (register + 1)) + "][" + asHex(buffer) + "]", e);
@@ -210,7 +210,7 @@ public class PCA9685 {
     buffer = (byte) (off & (byte) 0xFF);
     try {
       device.write(register + 2, buffer);
-      logger.info("write [" + asHex((byte) (register+2)) + "][" + asHex(buffer) + "]");
+      logger.debug("write [" + asHex((byte) (register + 2)) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex((byte) (register + 2)) + "][" + asHex(buffer) + "]", e);
     }
@@ -218,7 +218,7 @@ public class PCA9685 {
     buffer = (byte) (off >> 8);
     try {
       device.write(register+3, buffer);
-      logger.info("write [" + asHex((byte) (register+3)) + "][" + asHex(buffer) + "]");
+      logger.debug("write [" + asHex((byte) (register + 3)) + "][" + asHex(buffer) + "]");
     } catch (IOException e) {
       logger.error("failed to write [" + asHex((byte) (register + 3)) + "][" + asHex(buffer) + "]", e);
     }
